@@ -16,6 +16,13 @@ namespace TimeKeeper
             string adPath = DomainManager.RootPath;
             _ldapAuthentication = new LdapAuthentication(adPath);
             ConfigurationManager.LoadConfiguration();
+            UserNameTextBox.Text = Configuration.UserName;
+            PasswordBox.Password = Configuration.Password;
+            DomainTextBox.Text = Configuration.Domain;
+            if (Configuration.CredentialsSaved == "true")
+            {
+                SaveCredentialsCheckBox.IsChecked = true;
+            }
         }
 
         private void TextBox_UserName_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -52,6 +59,24 @@ namespace TimeKeeper
                     Close();
                 }
             }
+        }
+
+        private void SaveCredentialsCheckBox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            Configuration.CredentialsSaved = "true";
+            ConfigurationManager.SaveCredentials();
+        }
+
+        private void SaveCredentialsCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            Configuration.UserName = "";
+            Configuration.Password = "";
+            Configuration.Domain = "";
+            Configuration.CredentialsSaved = "false";
+            ConfigurationManager.SaveCredentials();
+            UserNameTextBox.Text = "";
+            PasswordBox.Password = "";
+            DomainTextBox.Text = "";
         }
     }
 }
