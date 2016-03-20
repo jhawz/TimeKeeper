@@ -1,27 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace TimeKeeper
 {
     /// <summary>
     /// Interaction logic for ConfigureWindow.xaml
     /// </summary>
-    public partial class ConfigureWindow : Window
+    public partial class ConfigureWindow
     {
         public ConfigureWindow()
         {
             InitializeComponent();
+
+            SharepointUrlTextBox.Text = Configuration.SharepointUrl;
+        }
+
+        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Configuration.Configured = "true";
+            ConfigurationManager.SaveConfiguration();
+            if (Configuration.SharepointUrl != "")
+            {
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("No Configuration Information");
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Configuration.SharepointUrl = SharepointUrlTextBox.Text;
         }
     }
 }

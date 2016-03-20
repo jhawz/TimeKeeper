@@ -28,6 +28,7 @@ namespace TimeKeeper
 
             // Sharepoint section of config.xml
             xmlWriter.WriteStartElement("sharepoint");
+            xmlWriter.WriteElementString("is_configured", "false");
             xmlWriter.WriteElementString("sharepoint_url", "");
             xmlWriter.WriteEndElement();
 
@@ -63,8 +64,10 @@ namespace TimeKeeper
 
             // Load sharepoint
             xmlReader.ReadStartElement("sharepoint");
+            Configuration.Configured = xmlReader.ReadElementString("is_configured");
             Configuration.SharepointUrl = xmlReader.ReadElementString("sharepoint_url");
 
+            // Close Reader
             xmlReader.ReadEndElement();
             xmlReader.Close();
         }
@@ -101,6 +104,36 @@ namespace TimeKeeper
                         }
                     }
                 // End credentials
+                configXmlDocument.Save("config.xml");
+            }
+        }
+
+        public static void SaveConfiguration()
+        {
+            if (!File.Exists("config.xml"))
+            {
+                CreateConfiguration();
+            }
+            // XML Document
+            var configXmlDocument = new XmlDocument();
+            configXmlDocument.Load("config.xml");
+            if (configXmlDocument.DocumentElement != null)
+            {
+                XmlNode sharepointNode = configXmlDocument.DocumentElement["sharepoint"];
+                if (sharepointNode != null)
+                    foreach (XmlNode child in sharepointNode.ChildNodes)
+                    {
+                        switch (child.Name)
+                        {
+                            case "sharepoint_url":
+                                child.InnerText = Configuration.SharepointUrl;
+                                break;
+                            case "is_configured":
+                                child.InnerText = Configuration.Configured;
+                                break;
+                        }
+                    }
+                // End sharepoint
                 configXmlDocument.Save("config.xml");
             }
         }

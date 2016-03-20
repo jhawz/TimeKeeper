@@ -14,5 +14,6 @@ namespace TimeKeeper
         public static string SharepointUrl { get; set; }
         public static bool Authenticated { get; set; }
         public static string CredentialsSaved { get; set; }
+        public static String Configured { get; set; }
     }
 }
