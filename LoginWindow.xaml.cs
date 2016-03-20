@@ -1,56 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.DirectoryServices;
 
 namespace TimeKeeper
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class LoginWindow
     {
-        public static Credentials credentials;
-        private LdapAuthentication ldapAuthentication;
-
+        private readonly LdapAuthentication _ldapAuthentication;
         public LoginWindow()
         {
             InitializeComponent();
-            credentials = new Credentials();
             string adPath = DomainManager.RootPath;
-            ldapAuthentication = new LdapAuthentication(adPath);
+            _ldapAuthentication = new LdapAuthentication(adPath);
+            ConfigurationManager.LoadConfiguration();
         }
 
-        private void TextBox_UserName(object sender, TextChangedEventArgs e)
+        private void TextBox_UserName_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            credentials.UserName = UserNameTextBox.Text;
+            Configuration.UserName = UserNameTextBox.Text;
         }
 
-        private void TextBox_Domain(object sender, TextChangedEventArgs e)
+        private void TextBox_Domain_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            credentials.Domain = DomainTextBox.Text;
+            Configuration.Domain = DomainTextBox.Text;
         }
 
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        private void PasswordBox_PasswordChanged_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            credentials.Password = PasswordBox.Password;
+            Configuration.Password = PasswordBox.Password;
         }
 
         private void Login_Button_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                credentials.Authenticated = ldapAuthentication.IsAuthenticated(credentials.Domain, credentials.UserName, credentials.Password);
+                Configuration.Authenticated = _ldapAuthentication.IsAuthenticated(Configuration.Domain, Configuration.UserName, Configuration.Password);
             }
             catch (Exception ex)
             {
@@ -58,11 +45,11 @@ namespace TimeKeeper
             }
             finally
             {
-                if (credentials.Authenticated.Equals(true))
+                if (Configuration.Authenticated.Equals(true))
                 {
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
-                    this.Close();
+                    Close();
                 }
             }
         }
