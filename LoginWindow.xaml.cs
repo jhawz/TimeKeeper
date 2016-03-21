@@ -54,9 +54,18 @@ namespace TimeKeeper
             {
                 if (Configuration.Authenticated.Equals(true))
                 {
-                    MainWindow mainWindow = new MainWindow();
-                    mainWindow.Show();
-                    Close();
+                    if (Configuration.Configured == "true")
+                    {
+                        MainWindow mainWindow = new MainWindow();
+                        mainWindow.Show();
+                        Close();
+                    }
+                    else
+                    {
+                        ConfigureWindow configureWindow = new ConfigureWindow();
+                        configureWindow.Show();
+                        Close();
+                    }
                 }
             }
         }

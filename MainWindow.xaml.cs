@@ -63,5 +63,38 @@ namespace TimeKeeper
             NotifyIcon.Dispose();
             base.OnClosing(e);
         }
+
+        private void Configure_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigureWindow configureWindow = new ConfigureWindow();
+            configureWindow.Show();
+            Close();
+        }
+
+        private void Exit_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+            Application.Current.Shutdown();
+        }
+
+        private void Save_Now_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Save_Later_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Add_Entry_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Delete_Entry_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -34,5 +34,21 @@ namespace TimeKeeper
         {
             Configuration.SharepointUrl = SharepointUrlTextBox.Text;
         }
+
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (Configuration.Configured == "true")
+            {
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+                Close();
+            }
+            else
+            {
+                LoginWindow loginWindow = new LoginWindow();
+                loginWindow.Show();
+                Close();
+            }
+        }
     }
 }
