@@ -4,7 +4,6 @@
         Title="MainWindow" Height="800" Width="800"
         Icon="Resources/Clock.ico">
     <Grid Background="Silver">
-        <ListBox Height="600" Margin="0,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Name="TimeEntriesListBox" Width="750" />
         <Button Content="Configure" HorizontalAlignment="center" Margin="517,0,200,27" VerticalAlignment="Bottom" Width="75" Click="Configure_Button_Click"/>
         <Button Content="Exit" HorizontalAlignment="Center" Margin="597,0,120,27" VerticalAlignment="Bottom" Width="75" Click="Exit_Button_Click"/>
         <Button Content="Save Now" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="147,0,0,27" Click="Save_Now_Button_Click"/>
@@ -12,5 +11,6 @@
         <Button Content="Add Time Enrty" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="90" Margin="307,0,395,27" Click="Add_Entry_Button_Click"/>
         <Button Content="Delete Time Enrty" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="110" Margin="402,0,280,27"
                 RenderTransformOrigin="0.173,1.9" Click="Delete_Entry_Button_Click"/>
+        <DataGrid Name="TimeEntryDataGrid" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Height="484" Width="750"/>
     </Grid>
 </Window>

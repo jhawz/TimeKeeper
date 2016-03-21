@@ -4,9 +4,12 @@
         Title="ConfigureWindow" Height="300" Width="400">
     <Grid Background="Silver">
         <Label Content="Sharepoint URL:" HorizontalAlignment="center" Margin="0,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="SharepointUrlTextBox" HorizontalAlignment="Center" Height="23" Margin="0,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="SharepointUrlTextBox" HorizontalAlignment="Center" Height="23" Margin="0,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" TextChanged="Sharepoint_Url_TextBox_TextChanged"/>
+        <Label Content="Sharepoint List" HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="SharepointListTextBox" HorizontalAlignment="Center" Height="23" Margin="0,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" TextChanged="Sharepoint_List_TextBox_TextChanged"/>
+        <Label Content="Real Name" HorizontalAlignment="Center" Margin="0,110,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="RealNameTextBox" HorizontalAlignment="Center" Height="23" Margin="0,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" TextChanged="Real_Name_TextBox_TextChanged"/>
         <Button Content="Save" HorizontalAlignment="Center" Margin="-100,0,0,20" VerticalAlignment="Bottom" Width="74" Click="Save_Button_Click"/>
         <Button Content="Cancel" HorizontalAlignment="Center" Margin="100,0,0,20" VerticalAlignment="Bottom" Width="75" Click="Cancel_Button_Click"/>
-
     </Grid>
 </Window>

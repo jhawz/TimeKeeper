@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.SharePoint.Client;
 using SP = Microsoft.SharePoint.Client;
 
@@ -13,26 +14,93 @@ namespace TimeKeeper
     public partial class MainWindow
     {
         protected System.Windows.Forms.NotifyIcon NotifyIcon;
+        protected bool IsOpen;
         public MainWindow()
         {
             InitializeComponent();
             SetNotifyIcon();
+            Title = Configuration.SharepointList;
+            List<TimeEntry> timeEntrieList = GetTimeEntryList();
+            TimeEntryDataGrid.ItemsSource = timeEntrieList;
+            TimeEntryDataGrid.ScrollIntoView(TimeEntryDataGrid.Items[TimeEntryDataGrid.Items.Count - 1]);
+        }
 
+        protected List<TimeEntry> GetTimeEntryList()
+        {
             // Setpup SharePoint context
-            ClientContext context = new ClientContext(Configuration.SharepointUrl);
-            Web sharePointSite = context.Web;
-            context.Load(sharePointSite, osite => osite.Title);
-            context.ExecuteQuery();
+            ClientContext clientContext = new ClientContext(Configuration.SharepointUrl);
+            
+            List oList = clientContext.Web.Lists.GetByTitle(Configuration.SharepointList);
+            CamlQuery camlQuery = new CamlQuery
+            {
+                ViewXml = "<View><Query><RowLimit>0</RowLimit></Query></View>"
+            };
+            ListItemCollection collListItem = oList.GetItems(camlQuery);
+            clientContext.Load(collListItem);
+            clientContext.ExecuteQuery();
 
-            Title = sharePointSite.Title;
-
-            ListCollection lists = sharePointSite.Lists;
-            IEnumerable<List> listsCollection =
-                context.LoadQuery(lists.Include(l => l.Title, l => l.Id));
-            context.ExecuteQuery();
-
-            TimeEntriesListBox.ItemsSource = listsCollection;
-            TimeEntriesListBox.DisplayMemberPath = "Title";
+            List<TimeEntry> timeEntries = new List<TimeEntry>();
+            foreach (ListItem oListItem in collListItem)
+            {
+                Dictionary<string, object> fieldValues = oListItem.FieldValues;
+                TimeEntry timeEntry = new TimeEntry();
+                object value;
+                FieldUserValue employeeObject = null;
+                if (fieldValues.TryGetValue("Employee", out value))
+                {
+                    if (value != null)
+                    {
+                        employeeObject = (FieldUserValue) value;
+                    }
+                }
+                if (employeeObject != null && employeeObject.LookupValue == Configuration.RealName)
+                {
+                    if (fieldValues.TryGetValue("Week_x0020_Ending", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.WeekEnding = value.ToString();
+                        }
+                    }
+                    if (fieldValues.TryGetValue("Day", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.Day = value.ToString();
+                        }
+                    }
+                    if (fieldValues.TryGetValue("Type_x0020_of_x0020_Work", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.TypeOfWork = value.ToString();
+                        }
+                    }
+                    if (fieldValues.TryGetValue("Customer", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.Customer = value.ToString();
+                        }
+                    }
+                    if (fieldValues.TryGetValue("Hours", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.Hours = value.ToString();
+                        }
+                    }
+                    if (fieldValues.TryGetValue("Title", out value))
+                    {
+                        if (value != null)
+                        {
+                            timeEntry.Description = value.ToString();
+                        }
+                    }
+                    timeEntries.Add(timeEntry);
+                }
+            }
+            return timeEntries;
         }
 
         private void SetNotifyIcon()
@@ -51,10 +119,36 @@ namespace TimeKeeper
                 };
         }
 
+        public void OpenWindowOnTimer()
+        {
+            IsOpen = false;
+
+            DispatcherTimer timer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+
+            timer.Tick += delegate
+            {
+                timer.Stop();
+                if (IsOpen) IsOpen = true;
+                Activate();
+                Topmost = true;
+                Show();
+                WindowState = WindowState.Normal;
+            };
+
+            timer.Start();
+
+        }
+
         protected override void OnStateChanged(EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
+            {
                 Hide();
+                OpenWindowOnTimer();
+            }
             base.OnStateChanged(e);
         }
 

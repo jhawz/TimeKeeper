@@ -30,6 +30,8 @@ namespace TimeKeeper
             xmlWriter.WriteStartElement("sharepoint");
             xmlWriter.WriteElementString("is_configured", "false");
             xmlWriter.WriteElementString("sharepoint_url", "");
+            xmlWriter.WriteElementString("sharepoint_list","");
+            xmlWriter.WriteElementString("real_name","");
             xmlWriter.WriteEndElement();
 
             // End
@@ -66,6 +68,8 @@ namespace TimeKeeper
             xmlReader.ReadStartElement("sharepoint");
             Configuration.Configured = xmlReader.ReadElementString("is_configured");
             Configuration.SharepointUrl = xmlReader.ReadElementString("sharepoint_url");
+            Configuration.SharepointList = xmlReader.ReadElementString("sharepoint_list");
+            Configuration.RealName = xmlReader.ReadElementString("real_name");
 
             // Close Reader
             xmlReader.ReadEndElement();
@@ -127,6 +131,12 @@ namespace TimeKeeper
                         {
                             case "sharepoint_url":
                                 child.InnerText = Configuration.SharepointUrl;
+                                break;
+                            case "sharepoint_list":
+                                child.InnerText = Configuration.SharepointList;
+                                break;
+                            case "real_name":
+                                child.InnerText = Configuration.RealName;
                                 break;
                             case "is_configured":
                                 child.InnerText = Configuration.Configured;
