@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeKeeper
+﻿namespace TimeKeeper
 {
     public static class Configuration
     {
@@ -12,6 +6,10 @@ namespace TimeKeeper
         public static string Password { get; set; }
         public static string Domain { get; set; }
         public static string SharepointUrl { get; set; }
+        public static string SharepointList { get; set; }
         public static bool Authenticated { get; set; }
+        public static string CredentialsSaved { get; set; }
+        public static string RealName { get; set; }
+        public static string Configured { get; set; }
     }
 }

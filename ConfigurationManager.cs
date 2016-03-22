@@ -1,5 +1,5 @@
-﻿using System.Xml;
-using System.IO;
+﻿using System.IO;
+using System.Xml;
 
 namespace TimeKeeper
 {
@@ -7,12 +7,12 @@ namespace TimeKeeper
     {
         public static void CreateConfiguration()
         {
-            XmlWriterSettings settings = new XmlWriterSettings
+            var settings = new XmlWriterSettings
             {
                 Indent = true,
                 NewLineOnAttributes = true
             };
-            XmlWriter xmlWriter = XmlWriter.Create("config.xml", settings);
+            var xmlWriter = XmlWriter.Create("config.xml", settings);
 
             // Start
             xmlWriter.WriteStartDocument();
@@ -23,11 +23,15 @@ namespace TimeKeeper
             xmlWriter.WriteElementString("username", "");
             xmlWriter.WriteElementString("password", "");
             xmlWriter.WriteElementString("domain", "");
+            xmlWriter.WriteElementString("credentials_saved", "false");
             xmlWriter.WriteEndElement();
 
             // Sharepoint section of config.xml
             xmlWriter.WriteStartElement("sharepoint");
+            xmlWriter.WriteElementString("is_configured", "false");
             xmlWriter.WriteElementString("sharepoint_url", "");
+            xmlWriter.WriteElementString("sharepoint_list","");
+            xmlWriter.WriteElementString("real_name","");
             xmlWriter.WriteEndElement();
 
             // End
@@ -42,14 +46,13 @@ namespace TimeKeeper
                 CreateConfiguration();
             }
 
-            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
+            var xmlReaderSettings = new XmlReaderSettings
             {
                 IgnoreComments = true,
                 IgnoreProcessingInstructions = true,
                 IgnoreWhitespace = true
             };
-
-            XmlReader xmlReader = XmlReader.Create("config.xml",xmlReaderSettings);
+            var xmlReader = XmlReader.Create("config.xml", xmlReaderSettings);
 
             xmlReader.MoveToContent();
             xmlReader.ReadStartElement("config");
@@ -58,14 +61,91 @@ namespace TimeKeeper
             Configuration.UserName = xmlReader.ReadElementString("username");
             Configuration.Password = xmlReader.ReadElementString("password");
             Configuration.Domain = xmlReader.ReadElementString("domain");
+            Configuration.CredentialsSaved = xmlReader.ReadElementString("credentials_saved");
             xmlReader.ReadEndElement();
 
             // Load sharepoint
             xmlReader.ReadStartElement("sharepoint");
+            Configuration.Configured = xmlReader.ReadElementString("is_configured");
             Configuration.SharepointUrl = xmlReader.ReadElementString("sharepoint_url");
-            
+            Configuration.SharepointList = xmlReader.ReadElementString("sharepoint_list");
+            Configuration.RealName = xmlReader.ReadElementString("real_name");
+
+            // Close Reader
             xmlReader.ReadEndElement();
             xmlReader.Close();
+        }
+
+        public static void SaveCredentials()
+        {
+            if (!File.Exists("config.xml"))
+            {
+                CreateConfiguration();
+            }
+            // XML Document
+            var configXmlDocument = new XmlDocument();
+            configXmlDocument.Load("config.xml");
+            if (configXmlDocument.DocumentElement != null)
+            {
+                XmlNode credentialsNode = configXmlDocument.DocumentElement["credentials"];
+                if (credentialsNode != null)
+                    foreach (XmlNode child in credentialsNode.ChildNodes)
+                    {
+                        switch (child.Name)
+                        {
+                            case "username":
+                                child.InnerText = Configuration.UserName;
+                                break;
+                            case "password":
+                                child.InnerText = Configuration.Password;
+                                break;
+                            case "domain":
+                                child.InnerText = Configuration.Domain;
+                                break;
+                            case "credentials_saved":
+                                child.InnerText = Configuration.CredentialsSaved;
+                                break;
+                        }
+                    }
+                // End credentials
+                configXmlDocument.Save("config.xml");
+            }
+        }
+
+        public static void SaveConfiguration()
+        {
+            if (!File.Exists("config.xml"))
+            {
+                CreateConfiguration();
+            }
+            // XML Document
+            var configXmlDocument = new XmlDocument();
+            configXmlDocument.Load("config.xml");
+            if (configXmlDocument.DocumentElement != null)
+            {
+                XmlNode sharepointNode = configXmlDocument.DocumentElement["sharepoint"];
+                if (sharepointNode != null)
+                    foreach (XmlNode child in sharepointNode.ChildNodes)
+                    {
+                        switch (child.Name)
+                        {
+                            case "sharepoint_url":
+                                child.InnerText = Configuration.SharepointUrl;
+                                break;
+                            case "sharepoint_list":
+                                child.InnerText = Configuration.SharepointList;
+                                break;
+                            case "real_name":
+                                child.InnerText = Configuration.RealName;
+                                break;
+                            case "is_configured":
+                                child.InnerText = Configuration.Configured;
+                                break;
+                        }
+                    }
+                // End sharepoint
+                configXmlDocument.Save("config.xml");
+            }
         }
     }
 }

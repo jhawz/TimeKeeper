@@ -9,8 +9,8 @@
         <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0" TextWrapping="Wrap" Text="Time Keeper Login" VerticalAlignment="Top" FontSize="16"/>
 
         <Label Content="Username" HorizontalAlignment="Center" Margin="10,60,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="UserNameTextBox" HorizontalAlignment="Center" Height="23" Margin="10,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"
-                 Width="220" TextChanged="TextBox_UserName_OnTextChanged"/>
+        <TextBox x:Name="UserNameTextBox"  HorizontalAlignment="Center" Height="23" Margin="10,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"
+                 Width="220" TextChanged="TextBox_UserName_OnTextChanged" />
 
         <Label Content="Password" HorizontalAlignment="Center" Margin="10,110,0,0" VerticalAlignment="Top"/>
         <PasswordBox x:Name="PasswordBox" HorizontalAlignment="Center" Margin="10,130,0,0" VerticalAlignment="Top"
@@ -19,6 +19,7 @@
         <Label Content="Domain" HorizontalAlignment="Center" Margin="10,160,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="DomainTextBox" HorizontalAlignment="Center" Height="23" Margin="10,180,0,0" TextWrapping="Wrap"
                  Text="" VerticalAlignment="Top" Width="220" TextChanged="TextBox_Domain_OnTextChanged"/>
-        <CheckBox Content="Remember My Credntials" HorizontalAlignment="Left" Margin="41,253,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="SaveCredentialsCheckBox" Content="Save Credntials" HorizontalAlignment="Left" Margin="41,253,0,0" VerticalAlignment="Top"
+                  Checked="SaveCredentialsCheckBox_OnChecked" Unchecked="SaveCredentialsCheckBox_OnUnchecked"/>
     </Grid>
 </Window>
