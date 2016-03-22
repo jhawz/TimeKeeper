@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Threading;
 using Microsoft.SharePoint.Client;
-using SP = Microsoft.SharePoint.Client;
 
 namespace TimeKeeper
 {
@@ -14,32 +14,43 @@ namespace TimeKeeper
     public partial class MainWindow
     {
         protected System.Windows.Forms.NotifyIcon NotifyIcon;
-        protected bool IsOpen;
+        private bool _isOpen;
+        private ClientContext _clientContext;
+        private BindingList<TimeEntry> _timeEntryList;
+        private BindingList<TimeEntry> _newTimeEntrieList;
+
         public MainWindow()
         {
             InitializeComponent();
             SetNotifyIcon();
             Title = Configuration.SharepointList;
-            List<TimeEntry> timeEntrieList = GetTimeEntryList();
-            TimeEntryDataGrid.ItemsSource = timeEntrieList;
+
+            // Datagrid to display data from sharepoint
+            _timeEntryList = GetTimeEntryList();
+            TimeEntryDataGrid.ItemsSource = _timeEntryList;
             TimeEntryDataGrid.ScrollIntoView(TimeEntryDataGrid.Items[TimeEntryDataGrid.Items.Count - 1]);
+
+            // Datagrid to add data into sharepoint
+            _newTimeEntrieList = new BindingList<TimeEntry>();
+            NewTimeEntryDataGrid.ItemsSource = _newTimeEntrieList;
+            NewTimeEntryDataGrid.ScrollIntoView(NewTimeEntryDataGrid.Items[NewTimeEntryDataGrid.Items.Count - 1]);
         }
 
-        protected List<TimeEntry> GetTimeEntryList()
+        protected BindingList<TimeEntry> GetTimeEntryList()
         {
             // Setpup SharePoint context
-            ClientContext clientContext = new ClientContext(Configuration.SharepointUrl);
+            _clientContext = new ClientContext(Configuration.SharepointUrl);
             
-            List oList = clientContext.Web.Lists.GetByTitle(Configuration.SharepointList);
+            List oList = _clientContext.Web.Lists.GetByTitle(Configuration.SharepointList);
             CamlQuery camlQuery = new CamlQuery
             {
                 ViewXml = "<View><Query><RowLimit>0</RowLimit></Query></View>"
             };
             ListItemCollection collListItem = oList.GetItems(camlQuery);
-            clientContext.Load(collListItem);
-            clientContext.ExecuteQuery();
+            _clientContext.Load(collListItem);
+            _clientContext.ExecuteQuery();
 
-            List<TimeEntry> timeEntries = new List<TimeEntry>();
+            BindingList<TimeEntry> timeEntries = new BindingList<TimeEntry>();
             foreach (ListItem oListItem in collListItem)
             {
                 Dictionary<string, object> fieldValues = oListItem.FieldValues;
@@ -103,6 +114,17 @@ namespace TimeKeeper
             return timeEntries;
         }
 
+        protected void AddNewTimeEntry()
+        {
+            TimeEntry newEntry = new TimeEntry();
+            _newTimeEntrieList.Add(newEntry);
+        }
+
+        protected void UpdateTimeEntries()
+        {
+
+        }
+
         private void SetNotifyIcon()
         {
             NotifyIcon = new System.Windows.Forms.NotifyIcon
@@ -121,7 +143,7 @@ namespace TimeKeeper
 
         public void OpenWindowOnTimer()
         {
-            IsOpen = false;
+            _isOpen = false;
 
             DispatcherTimer timer = new DispatcherTimer()
             {
@@ -131,7 +153,7 @@ namespace TimeKeeper
             timer.Tick += delegate
             {
                 timer.Stop();
-                if (IsOpen) IsOpen = true;
+                if (_isOpen) _isOpen = true;
                 Activate();
                 Topmost = true;
                 Show();
@@ -183,10 +205,15 @@ namespace TimeKeeper
 
         private void Add_Entry_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            AddNewTimeEntry();
         }
 
         private void Delete_Entry_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TimeEntryDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
 
         }

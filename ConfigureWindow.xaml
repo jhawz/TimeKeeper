@@ -1,7 +1,8 @@
 ﻿<Window x:Class="TimeKeeper.ConfigureWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ConfigureWindow" Height="300" Width="400">
+        Title="ConfigureWindow" Height="300" Width="400"
+        Icon="Resources/Clock.ico">
     <Grid Background="Silver">
         <Label Content="Sharepoint URL:" HorizontalAlignment="center" Margin="0,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="SharepointUrlTextBox" HorizontalAlignment="Center" Height="23" Margin="0,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" TextChanged="Sharepoint_Url_TextBox_TextChanged"/>
